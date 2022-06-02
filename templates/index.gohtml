@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Friend Tracker</title>
+  </head>
+
+  <body>
+    <h1>Friends</h1>
+
+    <table>
+      <tr>
+        <th>Friend</th>
+        <th>Group</th>
+           <th>Desired Frequency of Contact (in days)</th>
+        <th>Date of Last Contact</th>
+      </tr>
+      {{ range . }}
+        <tr>
+          <td><a href="/friend/?friend={{ .FriendName }}">{{ .FriendName }}</a></td>
+          <td>{{ .Group }}</td>
+          <td>{{ .DesiredFreq }}</td>
+          <td>{{ .LastContact }}</td>
+        </tr>
+      {{ end }}
+    </table>
+
+    <br />
+
+    <a href="/addfriend/">Add Friend</a>
+    <br />
+  </body>
+</html>

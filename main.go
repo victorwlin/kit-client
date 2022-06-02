@@ -1,29 +1,37 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
-	_ "github.com/heroku/x/hmetrics/onload"
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	port := os.Getenv("PORT")
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+		}
+	}()
 
+	port := os.Getenv("PORT")
 	if port == "" {
-		log.Fatal("$PORT must be set")
+		log.Fatal("PORT must be set")
 	}
 
-	router := gin.New()
-	router.Use(gin.Logger())
-	router.LoadHTMLGlob("templates/*.tmpl.html")
-	router.Static("/static", "static")
+	r := mux.NewRouter()
 
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl.html", nil)
-	})
+	r.Handle("/favicon.ico", http.NotFoundHandler())
 
-	router.Run(":" + port)
+	r.HandleFunc("/", index)
+	r.HandleFunc("/friend/", showFriend)
+	r.HandleFunc("/addfriend/", addFriend)
+	r.HandleFunc("/editfriend/", editFriend)
+	r.HandleFunc("/deletefriend/", deleteFriend)
+
+	http.Handle("/", r)
+
+	http.ListenAndServe(":"+port, nil)
 }
