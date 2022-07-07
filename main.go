@@ -30,8 +30,10 @@ func main() {
 	r.HandleFunc("/addfriend/", addFriend)
 	r.HandleFunc("/editfriend/", editFriend)
 	r.HandleFunc("/deletefriend/", deleteFriend)
+	r.HandleFunc("/updatelastcontact/", updateLastContact)
 
 	http.Handle("/", r)
 
 	http.ListenAndServe(":"+port, nil)
+	// http.ListenAndServe(":5000", nil)
 }

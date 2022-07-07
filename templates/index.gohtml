@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Friend Tracker</title>
-  </head>
+  {{ template "header.gohtml" }}
+
 
   <body>
-    <h1>Friends</h1>
-
     <table>
       <tr>
-        <th>Friend</th>
-        <th>Group</th>
-           <th>Desired Frequency of Contact (in days)</th>
-        <th>Date of Last Contact</th>
+        <th>Contact</th>
+        <th>Freq</th>
+        <th>Last Contact</th>
+        <th>Next Contact</th>
       </tr>
       {{ range . }}
         <tr>
-          <td><a href="/friend/?friend={{ .FriendName }}">{{ .FriendName }}</a></td>
-          <td>{{ .Group }}</td>
+          <td>
+            <a href="/friend/?friend={{ .FriendName }}">{{ .FriendName }}</a>
+          </td>
           <td>{{ .DesiredFreq }}</td>
           <td>{{ .LastContact }}</td>
+          <td>{{ .NextContact }}</td>
+          <td>
+            <a href="/updatelastcontact/?friend={{ .FriendName }}">
+              Update Last Contact
+            </a>
+          </td>
         </tr>
       {{ end }}
     </table>

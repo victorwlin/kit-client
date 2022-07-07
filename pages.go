@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 	"text/template"
@@ -17,6 +18,22 @@ func init() {
 
 func index(res http.ResponseWriter, req *http.Request) {
 	friends := getFriends()
+
+	friends.calcNextContacts()
+
+	sort.Slice(friends.Friends, func(i, j int) bool {
+		// convert to time
+		date1, err := time.Parse("2006-01-02", friends.Friends[i].NextContact)
+		if err != nil {
+			fmt.Println(err)
+		}
+		date2, err := time.Parse("2006-01-02", friends.Friends[j].NextContact)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		return date1.Before(date2)
+	})
 
 	tpl.ExecuteTemplate(res, "index.gohtml", friends.Friends)
 }
@@ -140,6 +157,17 @@ func deleteFriend(res http.ResponseWriter, req *http.Request) {
 	friend := getFriend(friendName).Friends[0]
 
 	deleteFriendAPI(friend)
+
+	http.Redirect(res, req, "/", http.StatusSeeOther)
+}
+
+func updateLastContact(res http.ResponseWriter, req *http.Request) {
+	friendName := req.FormValue("friend")
+	friend := getFriend(friendName).Friends[0]
+
+	friend.LastContact = time.Now().Format("2006-01-02")
+
+	editFriendAPI(friend)
 
 	http.Redirect(res, req, "/", http.StatusSeeOther)
 }

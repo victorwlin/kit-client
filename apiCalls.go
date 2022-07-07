@@ -16,6 +16,7 @@ type friend struct {
 	Group       string
 	DesiredFreq int
 	LastContact string
+	NextContact string
 }
 
 type friends struct {
